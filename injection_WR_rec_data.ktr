@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>tempo_injection_wr_rec_data</name>
+    <name>injection_wr_rec_data</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -437,7 +437,7 @@
   <notepads>
   </notepads>
   <connection>
-    <name>reconciliation</name>
+    <name>mto_reconciliation</name>
     <server>${host_name}</server>
     <type>MYSQL</type>
     <access>Native</access>
@@ -494,20 +494,110 @@
   <order>
     <hop>
       <from>last_batch_data</from>
-      <to>Filter rows</to>
+      <to>Switch / case</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
-      <to>Injection_WR_receive_data</to>
+      <from>Switch / case</from>
+      <to>Injection_mto_data</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
+      <from>Switch / case</from>
       <to>Altération structure flux 2</to>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>Switch / case</from>
+      <to>Delete</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Delete</from>
+      <to>Add constants</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Add constants</from>
+      <to>Insert / update</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
+  <step>
+    <name>Add constants</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>started</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>started</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>max_date</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>Y</set_empty_string>
+      </field>
+      <field>
+        <name>min_date</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>Y</set_empty_string>
+      </field>
+      <field>
+        <name>line_injected</name>
+        <type>Number</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>0</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>880</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
   <step>
     <name>Altération structure flux 2</name>
     <type>SelectValues</type>
@@ -521,43 +611,34 @@
     </partitioning>
     <fields>
       <field>
-        <name>batch_id</name>
+        <name>id</name>
       </field>
       <field>
         <name>product_id</name>
       </field>
       <field>
-        <name>product_name</name>
-      </field>
-      <field>
         <name>batch_name</name>
       </field>
       <field>
-        <name>date_time_insertion</name>
+        <name>batch_type</name>
       </field>
       <field>
-        <name>last_row_id</name>
+        <name>datetime_injection</name>
       </field>
       <field>
-        <name>last_row_date</name>
+        <name>line_injected</name>
       </field>
       <field>
-        <name>batch_rows_number</name>
+        <name>min_date</name>
       </field>
       <field>
-        <name>batch_rows_injected</name>
-      </field>
-      <field>
-        <name>last_row_id_injected</name>
-      </field>
-      <field>
-        <name>last_row_date_injected</name>
+        <name>max_date</name>
       </field>
       <field>
         <name>batch_status</name>
       </field>
       <field>
-        <name>error</name>
+        <name>error_message</name>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -570,14 +651,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1280</xloc>
-      <yloc>336</yloc>
+      <xloc>720</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Filter rows</name>
-    <type>FilterRows</type>
+    <name>Delete</name>
+    <type>Delete</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -586,75 +667,18 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <send_true_to>Injection_WR_receive_data</send_true_to>
-    <send_false_to>Altération structure flux 2</send_false_to>
-    <compare>
-      <condition>
-        <negated>N</negated>
-        <conditions>
-          <condition>
-            <negated>N</negated>
-            <operator>AND</operator>
-            <leftvalue>error</leftvalue>
-            <function>IS NULL</function>
-            <rightvalue/>
-          </condition>
-          <condition>
-            <negated>N</negated>
-            <operator>AND</operator>
-            <conditions>
-              <condition>
-                <negated>N</negated>
-                <leftvalue>batch_status</leftvalue>
-                <function>=</function>
-                <rightvalue/>
-                <value>
-                  <name>constant</name>
-                  <type>String</type>
-                  <text>injected</text>
-                  <length>-1</length>
-                  <precision>-1</precision>
-                  <isnull>N</isnull>
-                  <mask/>
-                </value>
-              </condition>
-              <condition>
-                <negated>N</negated>
-                <operator>OR</operator>
-                <leftvalue>batch_status</leftvalue>
-                <function>=</function>
-                <rightvalue/>
-                <value>
-                  <name>constant</name>
-                  <type>String</type>
-                  <text>data_already_exists</text>
-                  <length>-1</length>
-                  <precision>-1</precision>
-                  <isnull>N</isnull>
-                  <mask/>
-                </value>
-              </condition>
-              <condition>
-                <negated>N</negated>
-                <operator>OR</operator>
-                <leftvalue>batch_status</leftvalue>
-                <function>=</function>
-                <rightvalue/>
-                <value>
-                  <name>constant</name>
-                  <type>String</type>
-                  <text>recuperation</text>
-                  <length>-1</length>
-                  <precision>-1</precision>
-                  <isnull>N</isnull>
-                  <mask/>
-                </value>
-              </condition>
-            </conditions>
-          </condition>
-        </conditions>
-      </condition>
-    </compare>
+    <connection>mto_reconciliation</connection>
+    <commit>100</commit>
+    <lookup>
+      <schema/>
+      <table>mto_data</table>
+      <key>
+        <name>id</name>
+        <field>batch_id</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -664,13 +688,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>688</xloc>
-      <yloc>224</yloc>
+      <xloc>720</xloc>
+      <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Injection_WR_receive_data</name>
+    <name>Injection_mto_data</name>
     <type>TransExecutor</type>
     <description/>
     <distribute>Y</distribute>
@@ -719,14 +743,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1280</xloc>
-      <yloc>224</yloc>
+      <xloc>720</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>last_batch_data</name>
-    <type>TableInput</type>
+    <name>Insert / update</name>
+    <type>InsertUpdate</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -735,23 +759,127 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>reconciliation</connection>
-    <sql>SELECT * from daily_reconciliation_process where product_id="59" order by batch_id desc limit 1;</sql>
+    <connection>mto_reconciliation</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>mto_batch_injection</table>
+      <key>
+        <name>id</name>
+        <field>id</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>line_injected</name>
+        <rename>line_injected_1</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>min_date</name>
+        <rename>min_date_1</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>max_date</name>
+        <rename>max_date_1</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>batch_status</name>
+        <rename>started</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1040</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Switch / case</name>
+    <type>SwitchCase</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fieldname>batch_status</fieldname>
+    <use_contains>N</use_contains>
+    <case_value_type>None</case_value_type>
+    <case_value_format/>
+    <case_value_decimal/>
+    <case_value_group/>
+    <default_target_step/>
+    <cases>
+      <case>
+        <value>finished</value>
+        <target_step>Injection_mto_data</target_step>
+      </case>
+      <case>
+        <value>started</value>
+        <target_step>Altération structure flux 2</target_step>
+      </case>
+      <case>
+        <value>fault</value>
+        <target_step>Delete</target_step>
+      </case>
+    </cases>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>448</xloc>
+      <yloc>128</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>last_batch_data</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mto_reconciliation</connection>
+    <sql>SELECT * from mto_batch_injection where product_id="${job_product_id}" order by id desc limit 1;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
+    <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
         <type>Integer</type>
         <storagetype>normal</storagetype>
-        <name>batch_id</name>
+        <name>id</name>
         <length>9</length>
         <precision>0</precision>
         <origin>last_batch_data</origin>
-        <comments>batch_id</comments>
+        <comments>id</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -793,31 +921,8 @@
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>product_name</name>
-        <length>100</length>
-        <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>product_name</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
         <name>batch_name</name>
-        <length>100</length>
+        <length>60</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
         <comments>batch_name</comments>
@@ -837,36 +942,13 @@
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
-        <type>Timestamp</type>
-        <storagetype>normal</storagetype>
-        <name>date_time_insertion</name>
-        <length>0</length>
-        <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>date_time_insertion</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>last_row_id</name>
-        <length>45</length>
+        <name>batch_type</name>
+        <length>10</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_id</comments>
+        <comments>batch_type</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -885,11 +967,11 @@
       <value-meta>
         <type>Timestamp</type>
         <storagetype>normal</storagetype>
-        <name>last_row_date</name>
+        <name>datetime_injection</name>
         <length>0</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_date</comments>
+        <comments>datetime_injection</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -908,11 +990,11 @@
       <value-meta>
         <type>Integer</type>
         <storagetype>normal</storagetype>
-        <name>batch_rows_number</name>
+        <name>line_injected</name>
         <length>9</length>
         <precision>0</precision>
         <origin>last_batch_data</origin>
-        <comments>batch_rows_number</comments>
+        <comments>line_injected</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -929,36 +1011,13 @@
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
-        <type>Integer</type>
+        <type>Timestamp</type>
         <storagetype>normal</storagetype>
-        <name>batch_rows_injected</name>
-        <length>9</length>
-        <precision>0</precision>
-        <origin>last_batch_data</origin>
-        <comments>batch_rows_injected</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>last_row_id_injected</name>
-        <length>45</length>
+        <name>min_date</name>
+        <length>0</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_id_injected</comments>
+        <comments>min_date</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -977,11 +1036,11 @@
       <value-meta>
         <type>Timestamp</type>
         <storagetype>normal</storagetype>
-        <name>last_row_date_injected</name>
+        <name>max_date</name>
         <length>0</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_date_injected</comments>
+        <comments>max_date</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -1001,7 +1060,7 @@
         <type>String</type>
         <storagetype>normal</storagetype>
         <name>batch_status</name>
-        <length>100</length>
+        <length>10</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
         <comments>batch_status</comments>
@@ -1023,11 +1082,11 @@
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>error</name>
-        <length>200</length>
+        <name>error_message</name>
+        <length>536870911</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>error</comments>
+        <comments>error_message</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -1054,7 +1113,7 @@
     </remotesteps>
     <GUI>
       <xloc>224</xloc>
-      <yloc>224</yloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

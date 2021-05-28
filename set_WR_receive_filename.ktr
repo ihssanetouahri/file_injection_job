@@ -509,9 +509,9 @@
     <single_statement>N</single_statement>
     <replace_variables>Y</replace_variables>
     <quoteString>N</quoteString>
-    <sql>Insert Into daily_reconciliation_process (product_id,batch_name,product_name,batch_status)
+    <sql>Insert Into mto_batch_injection (product_id,batch_name,batch_type,batch_status)
 value
-('59','${wr_rec_filename}', 'WorldRemit',"recuperation");
+('59','${wr_rec_filename}', 'file',"started");
 </sql>
     <set_params>N</set_params>
     <insert_field/>

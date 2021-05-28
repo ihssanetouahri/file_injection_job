@@ -550,47 +550,19 @@
         <conditions>
           <condition>
             <negated>N</negated>
-            <conditions>
-              <condition>
-                <negated>N</negated>
-                <leftvalue>last_row_id</leftvalue>
-                <function>=</function>
-                <rightvalue>last_row_id_injected</rightvalue>
-              </condition>
-              <condition>
-                <negated>N</negated>
-                <operator>OR</operator>
-                <leftvalue>last_row_id_injected</leftvalue>
-                <function>IS NULL</function>
-                <rightvalue/>
-              </condition>
-            </conditions>
-          </condition>
-          <condition>
-            <negated>N</negated>
             <operator>AND</operator>
-            <conditions>
-              <condition>
-                <negated>N</negated>
-                <leftvalue>last_row_date_injected</leftvalue>
-                <function>=</function>
-                <rightvalue>last_row_date</rightvalue>
-              </condition>
-              <condition>
-                <negated>N</negated>
-                <operator>OR</operator>
-                <leftvalue>last_row_date_injected</leftvalue>
-                <function>IS NULL</function>
-                <rightvalue/>
-              </condition>
-            </conditions>
-          </condition>
-          <condition>
-            <negated>N</negated>
-            <operator>AND</operator>
-            <leftvalue>error</leftvalue>
-            <function>IS NULL</function>
+            <leftvalue>batch_status</leftvalue>
+            <function>=</function>
             <rightvalue/>
+            <value>
+              <name>constant</name>
+              <type>String</type>
+              <text>finished</text>
+              <length>-1</length>
+              <precision>-1</precision>
+              <isnull>N</isnull>
+              <mask/>
+            </value>
           </condition>
         </conditions>
       </condition>
@@ -621,22 +593,22 @@
       <schema_name/>
     </partitioning>
     <connection>reconciliation</connection>
-    <sql>SELECT * from daily_reconciliation_process where product_id="59" order by batch_id desc limit 1;</sql>
+    <sql>SELECT * from mto_batch_injection where product_id="59" order by id desc limit 1;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
+    <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
         <type>Integer</type>
         <storagetype>normal</storagetype>
-        <name>batch_id</name>
+        <name>id</name>
         <length>9</length>
         <precision>0</precision>
         <origin>last_batch_data</origin>
-        <comments>batch_id</comments>
+        <comments>id</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -678,31 +650,8 @@
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>product_name</name>
-        <length>100</length>
-        <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>product_name</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
         <name>batch_name</name>
-        <length>100</length>
+        <length>60</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
         <comments>batch_name</comments>
@@ -722,36 +671,13 @@
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
-        <type>Timestamp</type>
-        <storagetype>normal</storagetype>
-        <name>date_time_insertion</name>
-        <length>0</length>
-        <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>date_time_insertion</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>last_row_id</name>
-        <length>45</length>
+        <name>batch_type</name>
+        <length>10</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_id</comments>
+        <comments>batch_type</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -770,11 +696,11 @@
       <value-meta>
         <type>Timestamp</type>
         <storagetype>normal</storagetype>
-        <name>last_row_date</name>
+        <name>datetime_injection</name>
         <length>0</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_date</comments>
+        <comments>datetime_injection</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -793,11 +719,11 @@
       <value-meta>
         <type>Integer</type>
         <storagetype>normal</storagetype>
-        <name>batch_rows_number</name>
+        <name>line_injected</name>
         <length>9</length>
         <precision>0</precision>
         <origin>last_batch_data</origin>
-        <comments>batch_rows_number</comments>
+        <comments>line_injected</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -814,36 +740,13 @@
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
-        <type>Integer</type>
+        <type>Timestamp</type>
         <storagetype>normal</storagetype>
-        <name>batch_rows_injected</name>
-        <length>9</length>
-        <precision>0</precision>
-        <origin>last_batch_data</origin>
-        <comments>batch_rows_injected</comments>
-        <conversion_Mask>####0;-####0</conversion_Mask>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>last_row_id_injected</name>
-        <length>45</length>
+        <name>min_date</name>
+        <length>0</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_id_injected</comments>
+        <comments>min_date</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -862,11 +765,11 @@
       <value-meta>
         <type>Timestamp</type>
         <storagetype>normal</storagetype>
-        <name>last_row_date_injected</name>
+        <name>max_date</name>
         <length>0</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>last_row_date_injected</comments>
+        <comments>max_date</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -886,7 +789,7 @@
         <type>String</type>
         <storagetype>normal</storagetype>
         <name>batch_status</name>
-        <length>100</length>
+        <length>10</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
         <comments>batch_status</comments>
@@ -908,11 +811,11 @@
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>error</name>
-        <length>200</length>
+        <name>error_message</name>
+        <length>536870911</length>
         <precision>-1</precision>
         <origin>last_batch_data</origin>
-        <comments>error</comments>
+        <comments>error_message</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>

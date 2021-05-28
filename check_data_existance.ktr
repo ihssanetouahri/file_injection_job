@@ -436,6 +436,61 @@
   <notepads>
   </notepads>
   <connection>
+    <name>mto_reconciliation</name>
+    <server>${host_name}</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>${db_name}</database>
+    <port>3306</port>
+    <username>${user}</username>
+    <password>${password}</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
     <name>reconciliation</name>
     <server>${host_name}</server>
     <type>MYSQL</type>
@@ -589,11 +644,11 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>reconciliation</connection>
+    <connection>mto_reconciliation</connection>
     <sql>SELECT count(*) as inner_rows from worldremit_rec_temporary_table wr 
-left join mto_transactions mto
-on mto.transaction_code= wr.transaction_code
-where mto.transaction_code is not null</sql>
+left join mto_data mto
+on mto.shown_code= wr.transaction_code
+where mto.shown_code is not null</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -665,7 +720,7 @@ where mto.transaction_code is not null</sql>
         <name>rows_number</name>
         <length>15</length>
         <precision>0</precision>
-        <origin>check_data_existance 2</origin>
+        <origin>get rows_injected</origin>
         <comments>rows_number</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>

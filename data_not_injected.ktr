@@ -509,9 +509,9 @@
     <single_statement>N</single_statement>
     <replace_variables>Y</replace_variables>
     <quoteString>N</quoteString>
-    <sql>Update daily_reconciliation_process 
-set error= "data_not_injected"
-where daily_reconciliation_process.batch_id='${wu_rec_batch_id}'</sql>
+    <sql>Update mto_batch_injection
+set error_message= "data_not_injected", batch_status='fault'
+where id='${wr_rec_id}'</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
