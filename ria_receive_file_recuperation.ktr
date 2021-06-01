@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>ria_rec_set_variables</name>
+    <name>ria_receive_filename_recuperation</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -428,9 +428,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2021/04/19 15:18:11.171</created_date>
+    <created_date>2021/01/19 10:56:26.340</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2021/04/19 15:18:11.171</modified_date>
+    <modified_date>2021/01/19 10:56:26.340</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -493,14 +493,49 @@
   </connection>
   <order>
     <hop>
-      <from>last_batch_data</from>
-      <to>Set variables</to>
+      <from>extract last data executed</from>
+      <to>Tri lignes </to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filtrage lignes</from>
+      <to>Ecriture dans trace</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Vérification existance fichier</from>
+      <to>Tri lignes</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filtrage lignes</from>
+      <to>mg_receive_injection_states</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Récupération Nom fichiers</from>
+      <to>Vérification existance fichier</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Tri lignes</from>
+      <to>Multiway merge join</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Tri lignes </from>
+      <to>Multiway merge join</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Multiway merge join</from>
+      <to>Filtrage lignes</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Set variables</name>
-    <type>SetVariable</type>
+    <name>Ecriture dans trace</name>
+    <type>WriteToLog</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -509,15 +544,16 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
+    <loglevel>log_level_error</loglevel>
+    <displayHeader>Y</displayHeader>
+    <limitRows>N</limitRows>
+    <limitRowsNumber>0</limitRowsNumber>
+    <logmessage>error : No_specified_file</logmessage>
     <fields>
       <field>
-        <field_name>id</field_name>
-        <variable_name>ria_rec_id</variable_name>
-        <variable_type>JVM</variable_type>
-        <default_value/>
+        <name>exists</name>
       </field>
     </fields>
-    <use_formatting>Y</use_formatting>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -527,13 +563,228 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>688</xloc>
-      <yloc>176</yloc>
+      <xloc>1328</xloc>
+      <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>last_batch_data</name>
+    <name>Filtrage lignes</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <send_true_to>mg_receive_injection_states</send_true_to>
+    <send_false_to>Ecriture dans trace</send_false_to>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <conditions>
+          <condition>
+            <negated>N</negated>
+            <leftvalue>exists</leftvalue>
+            <function>=</function>
+            <rightvalue/>
+            <value>
+              <name>constant</name>
+              <type>String</type>
+              <text>Y</text>
+              <length>-1</length>
+              <precision>-1</precision>
+              <isnull>N</isnull>
+              <mask/>
+            </value>
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>short_filename</leftvalue>
+            <function>=</function>
+            <rightvalue>file_name</rightvalue>
+          </condition>
+        </conditions>
+      </condition>
+    </compare>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1040</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Récupération Nom fichiers</name>
+    <type>GetFileNames</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <filter>
+      <filterfiletype>all_files</filterfiletype>
+    </filter>
+    <doNotFailIfNoFile>N</doNotFailIfNoFile>
+    <rownum>N</rownum>
+    <isaddresult>Y</isaddresult>
+    <filefield>N</filefield>
+    <rownum_field/>
+    <filename_Field>C:\Users\IHSSANE TOUAHRI\Documents\Produit\Western_union_receive\${datef}\${namef}</filename_Field>
+    <wildcard_Field/>
+    <exclude_wildcard_Field/>
+    <dynamic_include_subfolders>N</dynamic_include_subfolders>
+    <limit>0</limit>
+    <file>
+      <name>C:\mto_data\Ria_receive\${ria_rec_date_path}\</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>192</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Tri lignes</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>short_filename</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Tri lignes </name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>file_name</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>624</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Vérification existance fichier</name>
+    <type>FileExists</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <filenamefield>exists</filenamefield>
+    <resultfieldname>result</resultfieldname>
+    <includefiletype>N</includefiletype>
+    <filetypefieldname/>
+    <addresultfilenames>Y</addresultfilenames>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>extract last data executed</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -544,22 +795,22 @@
       <schema_name/>
     </partitioning>
     <connection>mto_reconciliation</connection>
-    <sql>SELECT * from mto_batch_injection where product_id="${batch_product_id}" order by id desc limit 1;</sql>
+    <sql>SELECT * from daily_reconciliation_process where product_id='22' order by data_id desc limit 1</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
+    <lazy_conversion_active>Y</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
         <type>Integer</type>
         <storagetype>normal</storagetype>
-        <name>id</name>
+        <name>data_id</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>last_batch_data</origin>
-        <comments>id</comments>
+        <origin>extract last data</origin>
+        <comments>data_id</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -571,7 +822,7 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
@@ -581,7 +832,7 @@
         <name>product_id</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>last_batch_data</origin>
+        <origin>extract last data</origin>
         <comments>product_id</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
@@ -594,18 +845,43 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
         <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>batch_name</name>
-        <length>60</length>
+        <storagetype>binary-string</storagetype>
+        <storage-meta>
+          <value-meta>
+            <type>String</type>
+            <storagetype>normal</storagetype>
+            <name>product_name</name>
+            <length>45</length>
+            <precision>-1</precision>
+            <origin>extract last data</origin>
+            <comments>product_name</comments>
+            <conversion_Mask/>
+            <decimal_symbol>,</decimal_symbol>
+            <grouping_symbol> </grouping_symbol>
+            <currency_symbol/>
+            <trim_type>none</trim_type>
+            <case_insensitive>N</case_insensitive>
+            <collator_disabled>Y</collator_disabled>
+            <collator_strength>0</collator_strength>
+            <sort_descending>N</sort_descending>
+            <output_padding>N</output_padding>
+            <date_format_lenient>N</date_format_lenient>
+            <date_format_locale>fr_FR</date_format_locale>
+            <date_format_timezone>Africa/Casablanca</date_format_timezone>
+            <lenient_string_to_number>N</lenient_string_to_number>
+          </value-meta>
+        </storage-meta>
+        <name>product_name</name>
+        <length>45</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>batch_name</comments>
+        <origin>extract last data</origin>
+        <comments>product_name</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -617,18 +893,43 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
         <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>batch_type</name>
-        <length>10</length>
+        <storagetype>binary-string</storagetype>
+        <storage-meta>
+          <value-meta>
+            <type>String</type>
+            <storagetype>normal</storagetype>
+            <name>file_name</name>
+            <length>100</length>
+            <precision>-1</precision>
+            <origin>extract last data</origin>
+            <comments>file_name</comments>
+            <conversion_Mask/>
+            <decimal_symbol>,</decimal_symbol>
+            <grouping_symbol> </grouping_symbol>
+            <currency_symbol/>
+            <trim_type>none</trim_type>
+            <case_insensitive>N</case_insensitive>
+            <collator_disabled>Y</collator_disabled>
+            <collator_strength>0</collator_strength>
+            <sort_descending>N</sort_descending>
+            <output_padding>N</output_padding>
+            <date_format_lenient>N</date_format_lenient>
+            <date_format_locale>fr_FR</date_format_locale>
+            <date_format_timezone>Africa/Casablanca</date_format_timezone>
+            <lenient_string_to_number>N</lenient_string_to_number>
+          </value-meta>
+        </storage-meta>
+        <name>file_name</name>
+        <length>100</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>batch_type</comments>
+        <origin>extract last data</origin>
+        <comments>file_name</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -640,18 +941,64 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
+        <date_format_timezone>Africa/Casablanca</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Date</type>
+        <storagetype>normal</storagetype>
+        <name>file_date</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>extract last data</origin>
+        <comments>file_date</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol> </grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>fr_FR</date_format_locale>
+        <date_format_timezone>Africa/Casablanca</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>file_statut</name>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>extract last data</origin>
+        <comments>file_statut</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol> </grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
         <type>Timestamp</type>
         <storagetype>normal</storagetype>
-        <name>datetime_injection</name>
+        <name>date_time_injection</name>
         <length>0</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>datetime_injection</comments>
+        <origin>extract last data</origin>
+        <comments>date_time_injection</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -663,7 +1010,53 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
+        <date_format_timezone>Africa/Casablanca</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Date</type>
+        <storagetype>normal</storagetype>
+        <name>data_date</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>extract last data</origin>
+        <comments>data_date</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol> </grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>fr_FR</date_format_locale>
+        <date_format_timezone>Africa/Casablanca</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>file_line_number</name>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>extract last data</origin>
+        <comments>file_line_number</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol> </grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
@@ -673,7 +1066,7 @@
         <name>line_injected</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>last_batch_data</origin>
+        <origin>extract last data</origin>
         <comments>line_injected</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
@@ -686,64 +1079,43 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>Timestamp</type>
-        <storagetype>normal</storagetype>
-        <name>min_date</name>
-        <length>0</length>
-        <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>min_date</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
-        <date_format_timezone>Africa/Casablanca</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>Timestamp</type>
-        <storagetype>normal</storagetype>
-        <name>max_date</name>
-        <length>0</length>
-        <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>max_date</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol> </grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
         <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>batch_status</name>
-        <length>10</length>
+        <storagetype>binary-string</storagetype>
+        <storage-meta>
+          <value-meta>
+            <type>String</type>
+            <storagetype>normal</storagetype>
+            <name>process_status</name>
+            <length>100</length>
+            <precision>-1</precision>
+            <origin>extract last data</origin>
+            <comments>process_status</comments>
+            <conversion_Mask/>
+            <decimal_symbol>,</decimal_symbol>
+            <grouping_symbol> </grouping_symbol>
+            <currency_symbol/>
+            <trim_type>none</trim_type>
+            <case_insensitive>N</case_insensitive>
+            <collator_disabled>Y</collator_disabled>
+            <collator_strength>0</collator_strength>
+            <sort_descending>N</sort_descending>
+            <output_padding>N</output_padding>
+            <date_format_lenient>N</date_format_lenient>
+            <date_format_locale>fr_FR</date_format_locale>
+            <date_format_timezone>Africa/Casablanca</date_format_timezone>
+            <lenient_string_to_number>N</lenient_string_to_number>
+          </value-meta>
+        </storage-meta>
+        <name>process_status</name>
+        <length>100</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>batch_status</comments>
+        <origin>extract last data</origin>
+        <comments>process_status</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -755,18 +1127,43 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
       <value-meta>
         <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>error_message</name>
-        <length>536870911</length>
+        <storagetype>binary-string</storagetype>
+        <storage-meta>
+          <value-meta>
+            <type>String</type>
+            <storagetype>normal</storagetype>
+            <name>date_time_process_status</name>
+            <length>45</length>
+            <precision>-1</precision>
+            <origin>extract last data</origin>
+            <comments>date_time_process_status</comments>
+            <conversion_Mask/>
+            <decimal_symbol>,</decimal_symbol>
+            <grouping_symbol> </grouping_symbol>
+            <currency_symbol/>
+            <trim_type>none</trim_type>
+            <case_insensitive>N</case_insensitive>
+            <collator_disabled>Y</collator_disabled>
+            <collator_strength>0</collator_strength>
+            <sort_descending>N</sort_descending>
+            <output_padding>N</output_padding>
+            <date_format_lenient>N</date_format_lenient>
+            <date_format_locale>fr_FR</date_format_locale>
+            <date_format_timezone>Africa/Casablanca</date_format_timezone>
+            <lenient_string_to_number>N</lenient_string_to_number>
+          </value-meta>
+        </storage-meta>
+        <name>date_time_process_status</name>
+        <length>45</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
-        <comments>error_message</comments>
+        <origin>extract last data</origin>
+        <comments>date_time_process_status</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
         <grouping_symbol> </grouping_symbol>
@@ -778,7 +1175,55 @@
         <sort_descending>N</sort_descending>
         <output_padding>N</output_padding>
         <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>en_US</date_format_locale>
+        <date_format_locale>fr_FR</date_format_locale>
+        <date_format_timezone>Africa/Casablanca</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>binary-string</storagetype>
+        <storage-meta>
+          <value-meta>
+            <type>String</type>
+            <storagetype>normal</storagetype>
+            <name>error</name>
+            <length>45</length>
+            <precision>-1</precision>
+            <origin>extract last data</origin>
+            <comments>error</comments>
+            <conversion_Mask/>
+            <decimal_symbol>,</decimal_symbol>
+            <grouping_symbol> </grouping_symbol>
+            <currency_symbol/>
+            <trim_type>none</trim_type>
+            <case_insensitive>N</case_insensitive>
+            <collator_disabled>Y</collator_disabled>
+            <collator_strength>0</collator_strength>
+            <sort_descending>N</sort_descending>
+            <output_padding>N</output_padding>
+            <date_format_lenient>N</date_format_lenient>
+            <date_format_locale>fr_FR</date_format_locale>
+            <date_format_timezone>Africa/Casablanca</date_format_timezone>
+            <lenient_string_to_number>N</lenient_string_to_number>
+          </value-meta>
+        </storage-meta>
+        <name>error</name>
+        <length>45</length>
+        <precision>-1</precision>
+        <origin>extract last data</origin>
+        <comments>error</comments>
+        <conversion_Mask/>
+        <decimal_symbol>,</decimal_symbol>
+        <grouping_symbol> </grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>fr_FR</date_format_locale>
         <date_format_timezone>Africa/Casablanca</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
@@ -792,8 +1237,96 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>400</xloc>
-      <yloc>176</yloc>
+      <xloc>352</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>mg_receive_injection_states</name>
+    <type>TransExecutor</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <specification_method>filename</specification_method>
+    <trans_object_id/>
+    <trans_name/>
+    <filename>${Internal.Entry.Current.Directory}/ria_receive_injection_states.ktr</filename>
+    <directory_path/>
+    <group_size>1</group_size>
+    <group_field/>
+    <group_time/>
+    <parameters>
+      <inherit_all_vars>Y</inherit_all_vars>
+    </parameters>
+    <execution_result_target_step/>
+    <execution_time_field>ExecutionTime</execution_time_field>
+    <execution_result_field>ExecutionResult</execution_result_field>
+    <execution_errors_field>ExecutionNrErrors</execution_errors_field>
+    <execution_lines_read_field>ExecutionLinesRead</execution_lines_read_field>
+    <execution_lines_written_field>ExecutionLinesWritten</execution_lines_written_field>
+    <execution_lines_input_field>ExecutionLinesInput</execution_lines_input_field>
+    <execution_lines_output_field>ExecutionLinesOutput</execution_lines_output_field>
+    <execution_lines_rejected_field>ExecutionLinesRejected</execution_lines_rejected_field>
+    <execution_lines_updated_field>ExecutionLinesUpdated</execution_lines_updated_field>
+    <execution_lines_deleted_field>ExecutionLinesDeleted</execution_lines_deleted_field>
+    <execution_files_retrieved_field>ExecutionFilesRetrieved</execution_files_retrieved_field>
+    <execution_exit_status_field>ExecutionExitStatus</execution_exit_status_field>
+    <execution_log_text_field>ExecutionLogText</execution_log_text_field>
+    <execution_log_channelid_field>ExecutionLogChannelId</execution_log_channelid_field>
+    <result_rows_target_step/>
+    <result_files_target_step/>
+    <result_files_file_name_field>FileName</result_files_file_name_field>
+    <executors_output_step/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1328</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Multiway merge join</name>
+    <type>MultiwayMergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <join_type>FULL OUTER</join_type>
+    <step0>Tri lignes</step0>
+    <step1>Tri lignes </step1>
+    <number_input>2</number_input>
+    <keys>
+      <key>short_filename</key>
+      <key>file_name</key>
+    </keys>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>832</xloc>
+      <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

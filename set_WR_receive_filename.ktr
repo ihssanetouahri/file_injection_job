@@ -494,7 +494,7 @@
   <order>
   </order>
   <step>
-    <name>set_wr_receive_filename</name>
+    <name>set_batch_receive_filename</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -511,7 +511,7 @@
     <quoteString>N</quoteString>
     <sql>Insert Into mto_batch_injection (product_id,batch_name,batch_type,batch_status)
 value
-('59','${wr_rec_filename}', 'file',"started");
+('${batch_product_id}','${batch_filename}', 'file',"started");
 </sql>
     <set_params>N</set_params>
     <insert_field/>

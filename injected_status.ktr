@@ -509,7 +509,7 @@
     <single_statement>Y</single_statement>
     <replace_variables>Y</replace_variables>
     <quoteString>N</quoteString>
-    <sql>Update mto_batch_injection set batch_status= 'finished' where id='${job_batch_id}' and batch_status='started'</sql>
+    <sql>Update mto_batch_injection set batch_status= 'finished' where id='${batch_id}' and batch_status='started'</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

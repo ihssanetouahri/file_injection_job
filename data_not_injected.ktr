@@ -511,7 +511,7 @@
     <quoteString>N</quoteString>
     <sql>Update mto_batch_injection
 set error_message= "data_not_injected", batch_status='fault'
-where id='${wr_rec_id}'</sql>
+where id="${batch_id}"</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

@@ -12,13 +12,28 @@
   <modified_date>2021/04/20 11:30:23.341</modified_date>
   <parameters>
     <parameter>
-      <name>job_batch_id</name>
-      <default_value>${wr_rec_id}</default_value>
+      <name>batch_directory</name>
+      <default_value>C:\mto_data\Ria_receive\file_to_process</default_value>
       <description/>
     </parameter>
     <parameter>
-      <name>job_product_id</name>
-      <default_value>59</default_value>
+      <name>batch_filename</name>
+      <default_value>${ria_rec_filename}</default_value>
+      <description/>
+    </parameter>
+    <parameter>
+      <name>batch_id</name>
+      <default_value>${ria_rec_id}</default_value>
+      <description/>
+    </parameter>
+    <parameter>
+      <name>batch_path</name>
+      <default_value>${ria_rec_path}</default_value>
+      <description/>
+    </parameter>
+    <parameter>
+      <name>batch_product_id</name>
+      <default_value>22</default_value>
       <description/>
     </parameter>
   </parameters>
@@ -316,7 +331,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>80</xloc>
-      <yloc>192</yloc>
+      <yloc>288</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -354,8 +369,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>272</xloc>
-      <yloc>192</yloc>
+      <xloc>528</xloc>
+      <yloc>288</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -393,8 +408,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>192</yloc>
+      <xloc>720</xloc>
+      <yloc>288</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -432,8 +447,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>640</xloc>
-      <yloc>192</yloc>
+      <xloc>880</xloc>
+      <yloc>288</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -471,8 +486,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>848</xloc>
-      <yloc>192</yloc>
+      <xloc>1088</xloc>
+      <yloc>288</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -510,8 +525,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1312</xloc>
-      <yloc>192</yloc>
+      <xloc>1552</xloc>
+      <yloc>288</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -545,16 +560,16 @@
       <simulate>N</simulate>
       <fields>
         <field>
-          <source_filefolder>${wr_rec_path}</source_filefolder>
-          <destination_filefolder>C:\mto_data\WorldRemit_receive\archives</destination_filefolder>
+          <source_filefolder>${batch_path}</source_filefolder>
+          <destination_filefolder>C:\mto_data\Ria_receive\archives</destination_filefolder>
           <wildcard/>
         </field>
       </fields>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1312</xloc>
-      <yloc>304</yloc>
+      <xloc>1552</xloc>
+      <yloc>400</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -592,8 +607,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1072</xloc>
-      <yloc>192</yloc>
+      <xloc>1312</xloc>
+      <yloc>288</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -631,8 +646,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>848</xloc>
-      <yloc>304</yloc>
+      <xloc>1088</xloc>
+      <yloc>400</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -670,21 +685,141 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1072</xloc>
-      <yloc>304</yloc>
+      <xloc>1312</xloc>
+      <yloc>400</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>mail_check_file_existance</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/ria_receive_filename_recuperation.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <suppress_result_data>N</suppress_result_data>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>272</xloc>
+      <yloc>288</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>mail_check_file_existance 2</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/ria_receive_filename_recuperation.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <suppress_result_data>N</suppress_result_data>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>528</xloc>
+      <yloc>176</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Récupération courriels (POP3/IAMP)</name>
+      <description/>
+      <type>GET_POP</type>
+      <attributes/>
+      <servername>imap-mail.outlook.com</servername>
+      <username>ihssane.touahri@cashplus.ma</username>
+      <password>Encrypted 2be98afc86aa7f2e49f16bb218cc1a6d2</password>
+      <usessl>Y</usessl>
+      <sslport>993</sslport>
+      <outputdirectory>C:\mto_data\Ria_receive\file_to_process</outputdirectory>
+      <filenamepattern>name_{SYS|hhmmss_MMddyyyy|}_#IdFile#.mail</filenamepattern>
+      <retrievemails>0</retrievemails>
+      <firstmails/>
+      <delete>N</delete>
+      <savemessage>N</savemessage>
+      <saveattachment>Y</saveattachment>
+      <usedifferentfolderforattachment>Y</usedifferentfolderforattachment>
+      <protocol>IMAP</protocol>
+      <attachmentfolder>C:\mto_data\Ria_receive\file_to_process</attachmentfolder>
+      <attachmentwildcard/>
+      <valueimaplist>imaplistall</valueimaplist>
+      <imapfirstmails>1</imapfirstmails>
+      <imapfolder>ria_outbound_report</imapfolder>
+      <sendersearch>ihssane.touahri@cashplus.ma</sendersearch>
+      <nottermsendersearch>N</nottermsendersearch>
+      <receipientsearch/>
+      <nottermreceipientsearch>N</nottermreceipientsearch>
+      <subjectsearch>Correspondent MT Info Morocco</subjectsearch>
+      <nottermsubjectsearch>N</nottermsubjectsearch>
+      <bodysearch/>
+      <nottermbodysearch>N</nottermbodysearch>
+      <conditionreceiveddate>ignore</conditionreceiveddate>
+      <nottermreceiveddatesearch>N</nottermreceiveddatesearch>
+      <receiveddate1/>
+      <receiveddate2/>
+      <actiontype>get</actiontype>
+      <movetoimapfolder/>
+      <createmovetofolder>N</createmovetofolder>
+      <createlocalfolder>N</createlocalfolder>
+      <aftergetimap>delete</aftergetimap>
+      <includesubfolders>N</includesubfolders>
+      <useproxy>N</useproxy>
+      <proxyusername/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>272</xloc>
+      <yloc>176</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
   <hops>
-    <hop>
-      <from>Start</from>
-      <to>file_recuperation</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
     <hop>
       <from>file_recuperation</from>
       <to>set_variables</to>
@@ -764,6 +899,51 @@
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>mail_check_file_existance</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>mail_check_file_existance 2</from>
+      <to>file_recuperation</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail_check_file_existance</from>
+      <to>file_recuperation</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail_check_file_existance</from>
+      <to>Récupération courriels (POP3/IAMP)</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Récupération courriels (POP3/IAMP)</from>
+      <to>mail_check_file_existance 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
   </hops>

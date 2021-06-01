@@ -509,7 +509,7 @@
     <single_statement>N</single_statement>
     <replace_variables>Y</replace_variables>
     <quoteString>N</quoteString>
-    <sql>update mto_batch_injection set error_message="data_already_exist", batch_status='finished' where id="${job_batch_id}"</sql>
+    <sql>update mto_batch_injection set error_message="data_already_exist", batch_status='finished' where id="${batch_id}"</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

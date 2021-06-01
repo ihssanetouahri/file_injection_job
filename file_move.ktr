@@ -593,7 +593,7 @@
       <schema_name/>
     </partitioning>
     <connection>reconciliation</connection>
-    <sql>SELECT * from mto_batch_injection where product_id="59" order by id desc limit 1;</sql>
+    <sql>SELECT * from mto_batch_injection where product_id="${batch_product_id}" order by id desc limit 1;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

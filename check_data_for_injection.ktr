@@ -561,7 +561,7 @@
     <specification_method>filename</specification_method>
     <trans_object_id/>
     <trans_name/>
-    <filename>${Internal.Entry.Current.Directory}/injection_WorldRemit_recieve.ktr</filename>
+    <filename>C:\jobs\Moneytrans_receive_job\injection_moneytrans_receive.ktr</filename>
     <directory_path/>
     <group_size>1</group_size>
     <group_field/>
@@ -614,11 +614,11 @@
       <schema_name/>
     </partitioning>
     <connection>mto_reconciliation</connection>
-    <sql>SELECT * from mto_batch_injection where product_id="59" order by id desc limit 1;</sql>
+    <sql>SELECT * from mto_batch_injection where product_id="${batch_product_id}" order by id desc limit 1;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
+    <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>

@@ -949,7 +949,7 @@
       <schema_name/>
     </partitioning>
     <connection>mto_reconciliation</connection>
-    <sql>SELECT  * from mto_batch_injection where product_id="59" order by id desc limit 1
+    <sql>SELECT  * from mto_batch_injection where product_id="${batch_product_id}" order by id desc limit 1
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -1215,7 +1215,7 @@
       <schema_name/>
     </partitioning>
     <connection>mto_reconciliation</connection>
-    <sql>SELECT  batch_id, count(*) line_injected, max(transaction_date) as max_date, min(transaction_date) as min_date  from mto_data where batch_id='${job_batch_id}'</sql>
+    <sql>SELECT  batch_id, count(*) line_injected, max(transaction_date) as max_date, min(transaction_date) as min_date  from mto_data where batch_id='${batch_id}'</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

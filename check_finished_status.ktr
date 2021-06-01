@@ -548,7 +548,7 @@
               <length>-1</length>
               <precision>0</precision>
               <isnull>N</isnull>
-              <mask/>
+              <mask>####0;-####0</mask>
             </value>
           </condition>
           <condition>
@@ -577,8 +577,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>670</xloc>
-      <yloc>199</yloc>
+      <xloc>640</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -594,11 +594,11 @@
       <schema_name/>
     </partitioning>
     <connection>mto_reconciliation</connection>
-    <sql>SELECT * from mto_batch_injection where product_id="59" order by id desc limit 1;</sql>
+    <sql>SELECT * from mto_batch_injection where product_id="${batch_product_id}" order by id desc limit 1;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
+    <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
@@ -608,7 +608,7 @@
         <name>id</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>id</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
@@ -631,7 +631,7 @@
         <name>product_id</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>product_id</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
@@ -654,7 +654,7 @@
         <name>batch_name</name>
         <length>60</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>batch_name</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -677,7 +677,7 @@
         <name>batch_type</name>
         <length>10</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>batch_type</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -700,7 +700,7 @@
         <name>datetime_injection</name>
         <length>0</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>datetime_injection</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -723,7 +723,7 @@
         <name>line_injected</name>
         <length>9</length>
         <precision>0</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>line_injected</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>,</decimal_symbol>
@@ -746,7 +746,7 @@
         <name>min_date</name>
         <length>0</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>min_date</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -769,7 +769,7 @@
         <name>max_date</name>
         <length>0</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>max_date</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -792,7 +792,7 @@
         <name>batch_status</name>
         <length>10</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>batch_status</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -815,7 +815,7 @@
         <name>error_message</name>
         <length>536870911</length>
         <precision>-1</precision>
-        <origin>last_batch_data</origin>
+        <origin>last_batch_data 2</origin>
         <comments>error_message</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
@@ -897,8 +897,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>880</xloc>
-      <yloc>192</yloc>
+      <xloc>848</xloc>
+      <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
